@@ -1,0 +1,27 @@
+-- AlterTable
+ALTER TABLE "appointment" ALTER COLUMN "dateUpdated" DROP DEFAULT,
+ALTER COLUMN "dateUpdated" SET DATA TYPE TIMESTAMP(3);
+
+-- AlterTable
+ALTER TABLE "bed" ALTER COLUMN "dateUpdated" DROP DEFAULT,
+ALTER COLUMN "dateUpdated" SET DATA TYPE TIMESTAMP(3);
+
+-- AlterTable
+ALTER TABLE "diagnosis" ALTER COLUMN "dateUpdated" DROP DEFAULT,
+ALTER COLUMN "dateUpdated" SET DATA TYPE TIMESTAMP(3);
+
+-- AlterTable
+ALTER TABLE "patient" ALTER COLUMN "dateUpdated" DROP DEFAULT,
+ALTER COLUMN "dateUpdated" SET DATA TYPE TIMESTAMP(3);
+
+-- AlterTable
+ALTER TABLE "room" ALTER COLUMN "dateUpdated" DROP DEFAULT,
+ALTER COLUMN "dateUpdated" SET DATA TYPE TIMESTAMP(3);
+
+-- AlterTable
+ALTER TABLE "staff" ALTER COLUMN "dateUpdated" DROP DEFAULT,
+ALTER COLUMN "dateUpdated" SET DATA TYPE TIMESTAMP(3);
+
+-- AlterTable
+ALTER TABLE "surgery" ALTER COLUMN "dateUpdated" DROP DEFAULT,
+ALTER COLUMN "dateUpdated" SET DATA TYPE TIMESTAMP(3);

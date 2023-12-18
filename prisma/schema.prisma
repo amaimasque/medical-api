@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model appointment {
+  id            Int        @id(map: "PK_e8be1a53027415e709ce8a2db74") @default(autoincrement())
+  dateScheduled DateTime   @db.Timestamp(6)
+  dateCreated   DateTime   @default(now()) @db.Timestamp(6)
+  dateUpdated   DateTime   @updatedAt
+  dateDeleted   DateTime?  @db.Timestamp(6)
+  doctorId      Int?
+  diagnosisId   Int?       @unique(map: "REL_86395090f1ed2a6b749103a313")
+  staff         staff?     @relation(fields: [doctorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_514bcc3fb1b8140f85bf1cde6e2")
+  diagnosis     diagnosis? @relation(fields: [diagnosisId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_86395090f1ed2a6b749103a3138")
+  patient       patient?   @relation(fields: [patientId], references: [id])
+  patientId      Int?
+}
+
+model bed {
+  id          Int       @id(map: "PK_828b3f79eab8a8b1de6b6ed6c5a") @default(autoincrement())
+  dateCreated DateTime  @default(now()) @db.Timestamp(6)
+  dateUpdated DateTime  @updatedAt
+  dateDeleted DateTime? @db.Timestamp(6)
+  roomId      Int?
+  room        room?     @relation(fields: [roomId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_6281e91aacd3728b560352ea961")
+  patient     patient?
+}
+
+model diagnosis {
+  id          Int          @id(map: "PK_d5dbb1cc4e30790df368da56961") @default(autoincrement())
+  diagnosis   String       @db.VarChar
+  illnesses   String       @db.VarChar
+  dateCreated DateTime     @default(now()) @db.Timestamp(6)
+  dateUpdated DateTime     @updatedAt
+  dateDeleted DateTime?    @db.Timestamp(6)
+  appointment appointment?
+}
+
+model patient {
+  id            Int       @id(map: "PK_8dfa510bb29ad31ab2139fbfb99") @default(autoincrement())
+  firstName     String    @db.VarChar
+  lastName      String    @db.VarChar
+  middleName    String    @db.VarChar
+  birthYear     String    @db.VarChar(4)
+  birthMonth    String    @db.VarChar(2)
+  birthDay      String    @db.VarChar(2)
+  gender        String    @default("Male") @db.VarChar
+  address       String?   @db.VarChar
+  emailAddress  String?   @db.VarChar(25)
+  phoneNumber   String?   @db.VarChar(10)
+  dateCreated   DateTime  @default(now()) @db.Timestamp(6)
+  dateUpdated   DateTime  @updatedAt
+  dateDeleted   DateTime? @db.Timestamp(6)
+  assignedBedId Int?      @unique(map: "REL_3e05ff4e55732f2cc3eb5bdfc5")
+  bed           bed?      @relation(fields: [assignedBedId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_3e05ff4e55732f2cc3eb5bdfc54")
+  surgery       surgery[]
+  appointment   appointment[]
+}
+
+model room {
+  id             Int       @id(map: "PK_c6d46db005d623e691b2fbcba23") @default(autoincrement())
+  assignedRoomId String    @db.VarChar(3)
+  dateCreated    DateTime  @default(now()) @db.Timestamp(6)
+  dateUpdated    DateTime  @updatedAt
+  dateDeleted    DateTime? @db.Timestamp(6)
+  bed            bed[]
+  surgery        surgery[]
+}
+
+enum Gender {
+  Male
+  Female
+}
+
+enum StaffType {
+  Doctor
+  Nurse
+}
+
+enum Shift {
+  Day
+  Night
+}
+
+model staff {
+  id           Int           @id(map: "PK_e4ee98bb552756c180aec1e854a") @default(autoincrement())
+  firstName    String        @db.VarChar
+  lastName     String        @db.VarChar
+  middleName   String        @db.VarChar
+  birthYear    String        @db.VarChar(4)
+  birthMonth   String        @db.VarChar(2)
+  birthDay     String        @db.VarChar(2)
+  gender       Gender        @default(Male)
+  address      String        @db.VarChar
+  emailAddress String?       @db.VarChar(25)
+  phoneNumber  String        @db.VarChar(10)
+  type         StaffType     @default(Nurse)
+  shift        Shift         @default(Day)
+  isSurgeon    Boolean       @default(false)
+  dateCreated  DateTime      @default(now()) @db.Timestamp(6)
+  dateUpdated  DateTime      @updatedAt
+  dateDeleted  DateTime?     @db.Timestamp(6)
+  appointment  appointment[]
+  surgery      surgery[]
+}
+
+model surgery {
+  id            Int       @id(map: "PK_2e963fc0e35d07a36e15f331754") @default(autoincrement())
+  dateScheduled DateTime  @db.Timestamp(6)
+  dateCreated   DateTime  @default(now()) @db.Timestamp(6)
+  dateUpdated   DateTime  @updatedAt
+  dateDeleted   DateTime? @db.Timestamp(6)
+  surgeonId     Int?
+  roomId        Int?
+  patientId     Int?
+  staff         staff?    @relation(fields: [surgeonId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_17d78a62dfeafd302d16dfaaf79")
+  room          room?     @relation(fields: [roomId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_416a2e05f343a6dfa39589c9323")
+  patient       patient?  @relation(fields: [patientId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_cf1cdd4b148722b7f56719008ec")
+}
